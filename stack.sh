@@ -1271,7 +1271,7 @@ before_pid=`ps ax | grep /usr/bin/contrail-api | grep contrail-api.conf | awk '{
 echo_summary "TTU waiting for api server refresh from pid: "$before_pid
 after_pid=''
 
-restart_api=`(cd /home/stack/contrail-installer/ && ./contrail.sh restart_api)`
+restart_api=`(cd ../contrail-installer/ && ./contrail.sh restart_api)`
 
 while [[ $after_pid == '' || $after_pid == $before_pid ]]; do echo "waiting..."; sleep 5; after_pid=`ps ax | grep /usr/bin/contrail-api | grep contrail-api.conf | awk '{print $1}'`; done
 echo_summary "TTU proceeding api server restarted to pid: "$after_pid
