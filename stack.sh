@@ -1265,6 +1265,17 @@ fi
 if is_service_enabled neutron; then
     start_neutron
 fi
+
+# TTU: hack to run neutron, restart contrail api before creating networks
+before_pid=`ps ax | grep /usr/bin/contrail-api | grep contrail-api.conf | awk '{print $1}'`
+echo_summary "TTU waiting for api server refresh from pid: "$before_pid
+after_pid=''
+
+restart_api=`(cd /home/stack/contrail-installer/ && ./contrail.sh restart_api)`
+
+while [[ $after_pid == '' || $after_pid == $before_pid ]]; do echo "waiting..."; sleep 5; after_pid=`ps ax | grep /usr/bin/contrail-api | grep contrail-api.conf | awk '{print $1}'`; done
+echo_summary "TTU proceeding api server restarted to pid: "$after_pid
+
 # Once neutron agents are started setup initial network elements
 if is_service_enabled q-svc && [[ "$NEUTRON_CREATE_INITIAL_NETWORKS" == "True" ]]; then
     echo_summary "Creating initial neutron network elements"
